@@ -324,3 +324,21 @@ input {
   color: #000;
   border: 2px solid #000;
 }
+
+.form-message {
+  margin-top: 0.5rem;
+  min-height: 1.5rem;
+  text-align: center;
+}
+
+.error-msg {
+  color: red;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.success-msg {
+  color: green;
+  font-size: 1rem;
+  margin: 0;
+}

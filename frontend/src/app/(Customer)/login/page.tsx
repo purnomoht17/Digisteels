@@ -9,10 +9,14 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setMessage('');
+    setIsError(false);
 
     try {
       const response = await fetch('http://localhost:3000/api/pelanggan/login', {
@@ -27,8 +31,7 @@ export default function Login() {
       const data = await response.json();
 
       if (!response.ok) {
-        // error dari backend, misalnya email/password salah
-        throw new Error(data.errors || 'Login gagal');
+        throw new Error(data.message || 'Login gagal');
       }
 
       // Simpan token ke localStorage
@@ -37,9 +40,13 @@ export default function Login() {
       localStorage.setItem('email', data.email);
 
       setMessage('Login berhasil!');
-      router.push('/produk'); // Ganti ke path yang sesuai setelah login
+      setIsError(false);
+      setTimeout(() => {
+        router.push('/produk');
+      }, 1500);
     } catch (error: any) {
       setMessage(error.message || 'Terjadi kesalahan saat login');
+      setIsError(true);
     }
   };
 
@@ -72,6 +79,12 @@ export default function Login() {
               />
             </div>
 
+            {(message) && (
+              <div className="form-message">
+                <p className={isError ? 'error-msg' : 'success-msg'}>{message}</p>
+              </div>
+            )}
+
             <div className="btn-group">
               <button type="button" className="btn-back" onClick={() => router.push('/')}>
                 BACK
@@ -81,7 +94,6 @@ export default function Login() {
               </button>
             </div>
           </form>
-          {message && <p style={{ marginTop: '20px', color: 'red' }}>{message}</p>}
         </div>
       </main>
       <Footer />
