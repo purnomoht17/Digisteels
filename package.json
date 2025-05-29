@@ -13,18 +13,18 @@
       "^.+\\.[t|j]sx?$": "babel-jest"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wei5002/UAS_SoftwareDevelopment_Kelompok7.git"
-  },
+"repository": {
+  "type": "git",
+  "url": "git+https://github.com/purnomoht17/Digisteels.git"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/wei5002/UAS_SoftwareDevelopment_Kelompok7/issues"
-  },
-  "homepage": "https://github.com/wei5002/UAS_SoftwareDevelopment_Kelompok7#readme",
+  "url": "https://github.com/purnomoht17/Digisteels/issues"
+},
+  "homepage": "https://github.com/purnomoht17/Digisteels#readme",
   "dependencies": {
     "@prisma/client": "^6.8.2",
     "bcrypt": "^6.0.0",
