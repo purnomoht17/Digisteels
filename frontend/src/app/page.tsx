@@ -34,7 +34,7 @@ export default function Home() {
           </button>
           <button
             className="hero-signup"
-            onClick={() => router.push("/register")}
+            onClick={() => router.push("/signup")}
           >
             SIGN UP
           </button>
