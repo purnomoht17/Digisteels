@@ -1,26 +1,218 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==== GLOBAL STYLE ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ==== HEADER (header-login.css) ==== */
+header {
+  position: fixed;
+  background: #333;
+  color: white;
+  top: 0;
+  z-index: 99;
+  padding: 0px 20px;
+  width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.logo {
+  width: 200px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.tagline {
+  text-align: center;
+  font-family: "Times", sans-serif;
+  font-size: 16px;
+  letter-spacing: 5px;
+}
+
+.login-signup-btn {
+  display: flex;
+  gap: 12px;
+}
+
+.login-btn, .signup-btn {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* ==== FOOTER (footer.css) ==== */
+footer {
+  margin-top: 40px;
+  background: rgba(49, 59, 70, 1);
+  padding: 30px 20px;
+  font-size: 19.7px;
+  color: white;
+}
+
+.footer-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.footer-grid-one,
+.footer-grid-two,
+.footer-grid-three {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.footer-grid p {
+  font-family: "Times", sans-serif;
+}
+
+/* ==== HOME PAGE (home.css) ==== */
+.hero {
+  margin-top: 80px;
+  position: relative;
+  text-align: left;
+  color: white;
+}
+
+.hero-bg {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  filter: brightness(40%);
+}
+
+.hero-text {
+  position: absolute;
+  letter-spacing: 5px;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+}
+
+.hero-text h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.hero-login,
+.hero-signup {
+  padding: 10px 20px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+.introduction {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 40px;
+  margin-top: 40px;
+  margin-left: 20px;
+  justify-content: center;
+}
+
+.intro-decor {
+  background: rgba(49, 59, 70, 1);
+  min-width: 10px;
+  margin-right: 10px;
+}
+
+.intro-desc {
+  text-align: left;
+  font-family: "Times", sans-serif;
+  max-width: 700px;
+  font-size: 20px;
+}
+
+.categories {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.categories p {
+  font-family: "Times", sans-serif;
+  font-size: 19.9px;
+  letter-spacing: 3px;
+}
+
+.category-grid {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 20px;
+}
+
+.cat-item {
+  max-width: 60%;
+}
+
+.cat-item img {
+  width: 300px;
+  height: 400px;
+  object-fit: cover;
+}
+
+.cat-item h4 {
+  margin-top: 10px;
+}
+
+.reviews {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.review-wrapper {
+  position: relative;
+  overflow: hidden;
+  max-width: 800px;
+  margin: auto;
+}
+
+.review-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.review-card {
+  flex: 0 0 80%;
+  scroll-snap-align: center;
+  background: #929292;
+  padding: 1rem;
+  border-radius: 10px;
+  min-height: 150px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.scroll-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.scroll-btn:hover {
+  background-color: #555;
 }
