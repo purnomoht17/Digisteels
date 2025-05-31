@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors"; // ✅ Tambahkan ini
+import cors from "cors"; // 🟢 Import CORS
 
 import { errorMiddleware } from "../middleware/error-middleware.js";
 import { publicRouter } from "../route/public-api.js";
@@ -10,9 +10,8 @@ import { router as produkRouter } from "../route/produk-api.js";
 export const web = express();
 
 web.use(cors({
-  origin: "http://localhost:3001", // ✅ Izinkan frontend Anda
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Accept"]
+  origin: "http://localhost:3001",
+  credentials: true
 }));
 
 web.use(express.json());
