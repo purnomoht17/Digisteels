@@ -23,6 +23,9 @@ model Admin {
   username String  @unique
   password String
   token    String?
+
+  laporanPenjualan  LaporanPenjualan[]
+
 }
 
 model Produk {
@@ -81,6 +84,7 @@ model Pesanan {
 
   // Tambahkan relasi balik ke PembatalanPesanan
   pembatalanPesanan PembatalanPesanan?
+  laporanPenjualan  LaporanPenjualan?
 
   @@map("Pesanan")
 }
@@ -118,4 +122,17 @@ enum RefundStatus {
   belum_diproses
   diproses
   selesai
+}
+
+model LaporanPenjualan {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  tanggalLaporan  DateTime  @default(now())
+  pesananId   String    @unique @db.ObjectId
+  pesanan     Pesanan   @relation(fields: [pesananId], references: [id])
+  totalPenjualan  Float
+  adminId         String    @db.ObjectId
+  admin           Admin     @relation(fields: [adminId], references: [id])
+  keterangan      String?
+
+  @@map("LaporanPenjualan")
 }
