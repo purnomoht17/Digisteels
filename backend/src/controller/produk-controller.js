@@ -27,7 +27,7 @@ const getById = async (req, res, next) => {
   }
 };
 
-// Tambah produk baru
+// Tambah produk baru + variannya
 const create = async (req, res, next) => {
   try {
     const result = await produkService.create(req.body);
@@ -40,7 +40,7 @@ const create = async (req, res, next) => {
   }
 };
 
-// Update produk
+// Update produk + update / create / hapus variannya
 const update = async (req, res, next) => {
   try {
     const result = await produkService.update(req.params.id, req.body);
@@ -53,7 +53,7 @@ const update = async (req, res, next) => {
   }
 };
 
-// Hapus produk
+// Hapus produk + seluruh variannya
 const remove = async (req, res, next) => {
   try {
     await produkService.remove(req.params.id);

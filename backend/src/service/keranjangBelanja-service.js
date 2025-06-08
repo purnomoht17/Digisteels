@@ -9,12 +9,14 @@ import {
 
 // Ambil semua item keranjang berdasarkan userId
 const getAllByUserId = async (userId) => {
-  const validUserId = validate(getKeranjangIdValidation, userId);
-
   const items = await prismaClient.keranjangBelanja.findMany({
-    where: { userId: validUserId },
+    where: { userId: userId },
     include: {
-      produk: true
+      produkVarian: {
+        include: {
+          produk: true
+        }
+      }
     }
   });
 
@@ -28,11 +30,15 @@ const create = async (request) => {
   return prismaClient.keranjangBelanja.create({
     data: {
       userId: data.userId,
-      produkId: data.produkId,
-      jumlah: data.jumlah || 1,
-      size: data.size || null,
-      thickness: data.thickness || null,
-      hole: data.hole || null
+      produkVarianId: data.produkVarianId,
+      jumlah: data.jumlah || 1
+    },
+    include: {
+      produkVarian: {
+        include: {
+          produk: true
+        }
+      }
     }
   });
 };
@@ -44,7 +50,11 @@ const getById = async (id) => {
   const item = await prismaClient.keranjangBelanja.findUnique({
     where: { id: validId },
     include: {
-      produk: true
+      produkVarian: {
+        include: {
+          produk: true
+        }
+      }
     }
   });
 
@@ -55,7 +65,7 @@ const getById = async (id) => {
   return item;
 };
 
-// Update hanya jumlah item
+// Update jumlah item
 const updateJumlah = async (id, jumlahBaru) => {
   const validId = validate(getKeranjangIdValidation, id);
 
@@ -69,32 +79,65 @@ const updateJumlah = async (id, jumlahBaru) => {
 
   return prismaClient.keranjangBelanja.update({
     where: { id: validId },
-    data: { jumlah: jumlahBaru }
+    data: { jumlah: jumlahBaru },
+    include: {
+      produkVarian: {
+        include: {
+          produk: true
+        }
+      }
+    }
   });
 };
 
-// ✅ Update spesifikasi (jumlah, size, thickness, hole)
+// Update spesifikasi item (jumlah, size, thickness, hole)
 const updateSpesifikasi = async (id, request) => {
   const validId = validate(getKeranjangIdValidation, id);
   const data = validate(updateKeranjangValidation, request);
 
   const item = await prismaClient.keranjangBelanja.findUnique({
-    where: { id: validId }
+    where: { id: validId },
+    include: { produkVarian: true }
   });
 
   if (!item) {
     throw new ResponseError(404, "Item keranjang tidak ditemukan");
   }
 
-  return prismaClient.keranjangBelanja.update({
+  // Update jumlah (di keranjang)
+  const updatedKeranjang = await prismaClient.keranjangBelanja.update({
     where: { id: validId },
     data: {
-      jumlah: data.jumlah ?? item.jumlah,
-      size: data.size ?? item.size,
-      thickness: data.thickness ?? item.thickness,
-      hole: data.hole ?? item.hole
+      jumlah: data.jumlah ?? item.jumlah
     }
   });
+
+  // Update size / thickness / hole jika ada
+  const produkVarianUpdates = {};
+  if (data.size !== undefined) produkVarianUpdates.size = data.size;
+  if (data.thickness !== undefined) produkVarianUpdates.thickness = data.thickness;
+  if (data.hole !== undefined) produkVarianUpdates.hole = data.hole;
+
+  if (Object.keys(produkVarianUpdates).length > 0) {
+    await prismaClient.produkVarian.update({
+      where: { id: item.produkVarianId },
+      data: produkVarianUpdates
+    });
+  }
+
+  // Ambil data terbaru setelah update
+  const updatedItem = await prismaClient.keranjangBelanja.findUnique({
+    where: { id: validId },
+    include: {
+      produkVarian: {
+        include: {
+          produk: true
+        }
+      }
+    }
+  });
+
+  return updatedItem;
 };
 
 // Hapus item dari keranjang

@@ -12,29 +12,32 @@ export default function Signup() {
     nama: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   const validateForm = () => {
-    const { nama, email, password } = form;
+    const { nama, email, password, confirmPassword } = form;
 
-    if (!nama.trim()) return "nama wajib diisi";
-    if (typeof nama !== "string") return "nama harus berupa string";
-    if (nama.length > 100) return "nama maksimal 100 karakter";
+    if (!nama.trim()) return "Nama wajib diisi";
+    if (typeof nama !== "string") return "Nama harus berupa string";
+    if (nama.length > 100) return "Nama maksimal 100 karakter";
 
-    if (!email.trim()) return "email wajib diisi";
-    if (typeof email !== "string") return "email harus berupa string";
+    if (!email.trim()) return "Email wajib diisi";
+    if (typeof email !== "string") return "Email harus berupa string";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return "email harus dalam format yang valid";
+    if (!emailRegex.test(email)) return "Email harus dalam format yang valid";
 
-    if (!password.trim()) return "password wajib diisi";
-    if (typeof password !== "string") return "password harus berupa string";
-    if (password.length < 8) return "password minimal 8 karakter";
-    if (password.length > 100) return "password maksimal 100 karakter";
+    if (!password.trim()) return "Password wajib diisi";
+    if (typeof password !== "string") return "Password harus berupa string";
+    if (password.length < 8) return "Password minimal 8 karakter";
+    if (password.length > 100) return "Password maksimal 100 karakter";
     const allowed = /^[a-zA-Z0-9!@#$%^&*()_+={}|<>?;:,.~]*$/;
-    if (!allowed.test(password)) return "password hanya boleh mengandung huruf, angka, dan karakter khusus";
+    if (!allowed.test(password)) return "Password hanya boleh mengandung huruf, angka, dan karakter khusus";
+
+    if (password !== confirmPassword) return "Konfirmasi password tidak cocok";
 
     return "";
   };
@@ -64,7 +67,11 @@ export default function Signup() {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          nama: form.nama,
+          email: form.email,
+          password: form.password,
+        }),
       });
 
       const data = await res.json();
@@ -129,6 +136,19 @@ export default function Signup() {
                 name="password"
                 placeholder="Masukkan Password..."
                 value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="baris_form">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Konfirmasi Password..."
+                value={form.confirmPassword}
                 onChange={handleChange}
                 required
               />

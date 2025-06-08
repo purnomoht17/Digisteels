@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,6 +14,8 @@ model Pelanggan {
   password  String
   token     String?
   keranjang KeranjangBelanja[]
+  pesanan   Pesanan[]
+  pembatalanPesanan PembatalanPesanan[] // ← tambahkan ini untuk relasi balik
 }
 
 model Admin {
@@ -30,29 +26,96 @@ model Admin {
 }
 
 model Produk {
-  id         String             @id @default(auto()) @map("_id") @db.ObjectId
-  namaProduk String
-  kategori   String
-  harga      Float
-  stok       Int
-  thickness  Float[]            @default([]) // Boleh kosong, tapi bukan null
-  hole       Float[]            @default([])
-  size       String[]           @default([])
-  gambar     String? // Ini boleh null
-  keranjang  KeranjangBelanja[]
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  namaProduk   String
+  kategori     String
+  gambar       String?
+
+  varian       ProdukVarian[]
+}
+
+model ProdukVarian {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  produkId     String   @db.ObjectId
+  produk       Produk   @relation(fields: [produkId], references: [id])
+
+  size         String
+  thickness    Float
+  hole         Float
+  harga        Float
+  stok         Int
+
+  keranjang    KeranjangBelanja[]
 }
 
 model KeranjangBelanja {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String  @db.ObjectId
-  produkId  String  @db.ObjectId
-  jumlah    Int     @default(1)
-  size      String?
-  thickness Float?
-  hole      Float?
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String  @db.ObjectId
+  produkVarianId  String  @db.ObjectId
+  jumlah          Int     @default(1)
 
-  user   Pelanggan @relation(fields: [userId], references: [id])
-  produk Produk    @relation(fields: [produkId], references: [id])
+  user            Pelanggan    @relation(fields: [userId], references: [id])
+  produkVarian    ProdukVarian @relation(fields: [produkVarianId], references: [id])
+
+  pesanan         Pesanan[]
 }
 
+model Pesanan {
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String             @db.ObjectId
+  user              Pelanggan          @relation(fields: [userId], references: [id])
+  tanggalPemesanan  DateTime           @default(now())
+  status            StatusPesanan
+  alamatDetail      String
+  provinsi          String
+  kabupaten         String
+  kecamatan         String
+  kelurahan         String
+  nomorTelepon      String
+  keranjangId       String             @db.ObjectId
+  keranjang         KeranjangBelanja   @relation(fields: [keranjangId], references: [id])
+  bankName          String
+  accountName       String
+  accountNumber     Int
+  buktiTransferUrl  String
 
+  // Tambahkan relasi balik ke PembatalanPesanan
+  pembatalanPesanan PembatalanPesanan?
+
+  @@map("Pesanan")
+}
+
+enum StatusPesanan {
+  PENDING
+  ON_PROCESS
+  ON_DELIVERY
+}
+
+model PembatalanPesanan {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  pesananId          String   @db.ObjectId @unique // ← tambahkan @unique
+  userId             String   @db.ObjectId
+  alasanPembatalan   String
+  tanggalPengajuan   DateTime
+  statusPembatalan   StatusPembatalan
+  tanggalDirespon DateTime?
+  catatanAdmin       String
+  refundStatus       RefundStatus
+  jumlahRefund       Float    @db.Double
+
+  // Relations
+  pesanan            Pesanan   @relation(fields: [pesananId], references: [id])
+  user               Pelanggan @relation(fields: [userId], references: [id])
+}
+
+enum StatusPembatalan {
+  menunggu
+  disetujui
+  ditolak
+}
+
+enum RefundStatus {
+  belum_diproses
+  diproses
+  selesai
+}

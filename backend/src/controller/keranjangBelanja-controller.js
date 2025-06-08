@@ -1,16 +1,10 @@
 import keranjangService from "../service/keranjangBelanja-service.js";
 
-// Ambil semua item keranjang berdasarkan userId
+// Ambil semua item keranjang milik pelanggan yg login
 const getAllByUser = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-
-    // Jika login sebagai pelanggan, batasi akses hanya ke datanya sendiri
-    if (req.pelanggan && req.pelanggan.id !== userId) {
-      return res.status(403).json({
-        errors: "Pelanggan tidak diizinkan mengakses keranjang pengguna lain"
-      });
-    }
+    // Ambil userId dari token pelanggan yg sedang login
+    const userId = req.pelanggan.id;
 
     const result = await keranjangService.getAllByUserId(userId);
     res.status(200).json({
@@ -46,7 +40,11 @@ const getById = async (req, res, next) => {
 // Tambah item ke keranjang
 const create = async (req, res, next) => {
   try {
-    const result = await keranjangService.create(req.body);
+    const result = await keranjangService.create({
+      userId: req.pelanggan.id, // Inject userId dari token
+      produkVarianId: req.body.produkVarianId,
+      jumlah: req.body.jumlah
+    });
     res.status(201).json({
       message: "Item berhasil ditambahkan ke keranjang",
       data: result
@@ -56,7 +54,7 @@ const create = async (req, res, next) => {
   }
 };
 
-// Update jumlah item (khusus)
+// Update jumlah item
 const updateJumlah = async (req, res, next) => {
   try {
     const result = await keranjangService.updateJumlah(req.params.id, req.body.jumlah);
@@ -69,7 +67,7 @@ const updateJumlah = async (req, res, next) => {
   }
 };
 
-// Update spesifikasi item (jumlah, size, thickness, hole)
+// Update spesifikasi item
 const updateSpesifikasi = async (req, res, next) => {
   try {
     const result = await keranjangService.updateSpesifikasi(req.params.id, req.body);
