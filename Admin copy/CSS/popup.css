@@ -1,0 +1,388 @@
+.popup_produk {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.popup_isi {
+  position: relative;
+  background-color: #2f3943;
+  margin: 6% auto;
+  padding: 20px;
+  width: 850px;
+  max-width: 90%;
+  height: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  /* display: flex; */
+  /* flex-direction: column; */
+}
+
+.popup_container {
+  display: flex;
+  gap: 0px;
+}
+
+.popup_header{
+  margin-left: 30px;
+}
+
+.gambar_produk {
+  width: 330px;
+  height: 330px;
+  object-fit: cover;
+  padding-bottom: 17px;
+}
+
+.judul_produk {
+  font-size: 1.5rem;
+  margin-bottom: -20px;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.jenis_produk {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.popup_detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.bagian_kanan {
+  margin-bottom: 20px;
+}
+
+.bagian_kanan h3 {
+  color: white;
+  font-size: 23px;
+  margin-bottom: 7px;
+  letter-spacing: 5px;
+}
+
+/* THICKNESS*/
+.thickness_buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 5px;
+  margin-left: 7%;
+}
+    
+.thickness_btn {
+  margin-left: 5px;
+  padding: 8px 17px;
+  background-color: #ffffff;
+  font-size: 21px;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  letter-spacing: 1px;
+  margin-bottom: -12px; 
+}
+    
+.thickness_btn:hover {
+  background-color: #4a89dc;
+}
+    
+.thickness_btn.active {
+  background-color: #4a89dc;
+}
+
+/* HOLE */
+.hole_buttons {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 5px;
+  gap: 20px;
+  margin-top: 5px;
+  margin-left: 7%;
+}
+    
+.hole_btn {
+  margin-left: 5px;
+  padding: 8px 17px;
+  background-color: #ffffff;
+  font-size: 21px;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  letter-spacing: 1px;
+  margin-bottom: -12px; 
+}
+    
+.hole_btn:hover {
+  background-color: #4a89dc;
+}
+    
+.hole_btn.active {
+  background-color: #4a89dc;
+}
+
+/* SIZE */
+.size_buttons {
+  display: flex;
+  flex-wrap: wrap; 
+  margin-top: 5px;
+  margin-left: 1%;
+}
+
+.size_btn {
+  margin-left: 7%;
+  padding: 8px 17px;
+  background-color: #ffffff;
+  font-size: 21px;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  letter-spacing: 3px;
+  margin-bottom: 8px; 
+}
+
+.size_btn:hover {
+  background-color: #4a89dc;
+}
+
+.size_btn.active {
+  background-color: #4a89dc;
+}
+
+
+/* button edit dan delete*/
+.popup_action {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.edit-delete-btn{
+  display: flex;
+  gap: 40px;
+  margin-left: 0px; 
+}
+
+.edit_btn, .delete_btn {
+  font-size: 18px;
+  padding: 5px 25px;
+  border-radius: 3000px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.edit_btn{
+  border: 5px solid #2f3943;
+  background-color: #2f3943;
+  color: white;
+}
+
+.delete_btn{
+  border: 5px solid #c91616;
+  background-color: #c91616;
+  color: white;
+}
+
+
+/* Stok dan Harga */
+.stock_price {
+  font-size: 21px;
+  letter-spacing: 5px;
+  color: white;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.stock_price p{
+  margin-bottom: -10px;
+  margin-left: 40px;
+}
+
+#edit-stock, 
+#edit-price {
+  width: 55%;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  /* background-color: yellow; */
+}
+
+
+/* BUTTON CLOSE */
+.close {
+  color: #ffffff;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 36px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.close:hover {
+  color: grey;
+}
+
+.btn-save {
+  background-color: #28a745; /* hijau */
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-save:hover {
+  background-color: #218838; /* hijau lebih gelap saat hover */
+  box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+.btn-save:active {
+  background-color: #1e7e34;
+  box-shadow: inset 0 3px 5px rgba(0,0,0,0.2);
+}
+
+.save_container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  
+}
+
+
+@media (max-width: 1024px) {
+  .popup_isi {
+    width: 50%;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .popup_container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .popup_header {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .gambar_produk {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+  }
+
+  .close {
+    right: 30px;
+    top: 30px;
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .popup_isi {
+    width: 60%;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .judul_produk,
+  .jenis_produk,
+  .bagian_kanan h3,
+  .stock_price,
+  .nilai_price {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .thickness_buttons,
+  .hole_buttons,
+  .size_buttons {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .size_btn,
+  .thickness_btn,
+  .hole_btn {
+    font-size: 1rem;
+    padding: 6px 12px;
+    margin-left: 0;
+  }
+
+  .edit-delete-btn {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .edit_btn,
+  .delete_btn {
+    font-size: 1rem;
+    padding: 6px 20px;
+  }
+
+  .stock_price p {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .close {
+    right: 20px;
+    top: 20px;
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup_isi {
+    padding: 15px;
+  }
+
+  .popup_header {
+    text-align: center;
+    margin: 0;
+  }
+
+  .gambar_produk {
+    max-width: 250px;
+  }
+
+  .popup_action {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .stock_price {
+    align-items: center;
+  }
+
+  .close {
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+  }
+}

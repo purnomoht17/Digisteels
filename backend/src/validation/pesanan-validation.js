@@ -16,7 +16,6 @@ const createPesananValidation = Joi.object({
     }),
 
   alamatDetail: Joi.string()
-    .max(255)
     .required()
     .messages({
       'string.base': "Alamat detail harus berupa string",
@@ -25,7 +24,6 @@ const createPesananValidation = Joi.object({
     }),
 
   provinsi: Joi.string()
-    .max(20)
     .required()
     .messages({
       'string.base': "Provinsi harus berupa string",
@@ -34,7 +32,6 @@ const createPesananValidation = Joi.object({
     }),
 
   kabupaten: Joi.string()
-    .max(20)
     .required()
     .messages({
       'string.base': "Kabupaten harus berupa string",
@@ -43,7 +40,6 @@ const createPesananValidation = Joi.object({
     }),
 
   kecamatan: Joi.string()
-    .max(20)
     .required()
     .messages({
       'string.base': "Kecamatan harus berupa string",
@@ -52,7 +48,6 @@ const createPesananValidation = Joi.object({
     }),
 
   kelurahan: Joi.string()
-    .max(20)
     .required()
     .messages({
       'string.base': "Kelurahan harus berupa string",
@@ -122,7 +117,6 @@ const updatePesananValidation = Joi.object({
     }),
 
   alamatDetail: Joi.string()
-    .max(255)
     .optional()
     .messages({
       'string.base': "Alamat detail harus berupa string",
@@ -130,7 +124,6 @@ const updatePesananValidation = Joi.object({
     }),
 
   provinsi: Joi.string()
-    .max(20)
     .optional()
     .messages({
       'string.base': "Provinsi harus berupa string",
@@ -138,7 +131,6 @@ const updatePesananValidation = Joi.object({
     }),
 
   kabupaten: Joi.string()
-    .max(20)
     .optional()
     .messages({
       'string.base': "Kabupaten harus berupa string",
@@ -146,7 +138,6 @@ const updatePesananValidation = Joi.object({
     }),
 
   kecamatan: Joi.string()
-    .max(20)
     .optional()
     .messages({
       'string.base': "Kecamatan harus berupa string",
@@ -154,7 +145,6 @@ const updatePesananValidation = Joi.object({
     }),
 
   kelurahan: Joi.string()
-    .max(20)
     .optional()
     .messages({
       'string.base': "Kelurahan harus berupa string",
@@ -162,7 +152,6 @@ const updatePesananValidation = Joi.object({
     }),
 
   nomorTelepon: Joi.string()
-    .max(255)
     .optional()
     .messages({
       'string.base': "Nomor telepon harus berupa string",

@@ -8,7 +8,7 @@ import {
 
 // Ambil semua produk dengan filter dan paginasi
 const getAll = async (query) => {
-  const { kategori, search, page = 1, limit = 10 } = query;
+  const { kategori, search } = query;
   const filters = {};
 
   if (kategori) {
@@ -22,32 +22,16 @@ const getAll = async (query) => {
     };
   }
 
-  const skip = (parseInt(page) - 1) * parseInt(limit);
-  const take = parseInt(limit);
-
-  const [data, total] = await Promise.all([
-    prismaClient.produk.findMany({
-      where: filters,
-      skip,
-      take,
-      orderBy: { namaProduk: 'asc' },
-      include: {
-        varian: true
-      }
-    }),
-    prismaClient.produk.count({
-      where: filters
-    })
-  ]);
+  const data = await prismaClient.produk.findMany({
+    where: filters,
+    orderBy: { namaProduk: 'asc' },
+    include: {
+      varian: true
+    }
+  });
 
   return {
-    data,
-    pagination: {
-      total,
-      page: parseInt(page),
-      limit: parseInt(limit),
-      totalPages: Math.ceil(total / limit)
-    }
+    data
   };
 };
 
@@ -80,9 +64,9 @@ const create = async (request) => {
       gambar: data.gambar || null,
       varian: {
         create: data.varian.map((v) => ({
-          size: v.size,
-          thickness: v.thickness,
-          hole: v.hole,
+          size: v.size || null,
+          thickness: v.thickness != null ? v.thickness : null,
+          hole: v.hole != null ? v.hole : null,
           harga: v.harga,
           stok: v.stok
         }))
@@ -152,9 +136,9 @@ const update = async (id, request) => {
         prismaClient.produkVarian.update({
           where: { id: v.id },
           data: {
-            size: v.size,
-            thickness: v.thickness,
-            hole: v.hole,
+            size: v.size || null,
+            thickness: v.thickness != null ? v.thickness : null,
+            hole: v.hole != null ? v.hole : null,
             harga: v.harga,
             stok: v.stok
           }
@@ -167,9 +151,9 @@ const update = async (id, request) => {
     .filter(v => !v.id)
     .map(v => ({
       produkId: produkId,
-      size: v.size,
-      thickness: v.thickness,
-      hole: v.hole,
+      size: v.size || null,
+      thickness: v.thickness != null ? v.thickness : null,
+      hole: v.hole != null ? v.hole : null,
       harga: v.harga,
       stok: v.stok
     }));

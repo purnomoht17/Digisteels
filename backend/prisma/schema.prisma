@@ -42,9 +42,9 @@ model ProdukVarian {
   produkId     String   @db.ObjectId
   produk       Produk   @relation(fields: [produkId], references: [id])
 
-  size         String
-  thickness    Float
-  hole         Float
+  size         String?
+  thickness    Float?
+  hole         Float?
   harga        Float
   stok         Int
 
@@ -56,6 +56,8 @@ model KeranjangBelanja {
   userId          String  @db.ObjectId
   produkVarianId  String  @db.ObjectId
   jumlah          Int     @default(1)
+  totalHarga      Float   @default(0)
+  isOrdered       Boolean @default(false) // ← tambahkan ini ✅
 
   user            Pelanggan    @relation(fields: [userId], references: [id])
   produkVarian    ProdukVarian @relation(fields: [produkVarianId], references: [id])

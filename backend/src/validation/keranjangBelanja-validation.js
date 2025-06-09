@@ -29,6 +29,14 @@ const createKeranjangValidation = Joi.object({
       'number.integer': "Jumlah harus berupa bilangan bulat",
       'number.min': "Jumlah minimal 1",
     }),
+
+  totalHarga: Joi.number()
+    .positive()
+    .optional()
+    .messages({
+      'number.base': "Total Harga harus berupa angka",
+      'number.positive': "Total Harga harus bernilai positif"
+    }),
 });
 
 // Validasi untuk mengupdate item keranjang belanja
@@ -52,20 +60,26 @@ const updateKeranjangValidation = Joi.object({
     }),
 
   thickness: Joi.number()
-    .positive()
+    .min(0)
     .optional()
     .messages({
       'number.base': "Thickness harus berupa angka",
-      'number.positive': "Thickness harus bernilai positif"
+      'number.min': "Thickness minimal 0 (boleh tidak ada)"
     }),
 
   hole: Joi.number()
-    .positive()
+    .min(0)
     .optional()
     .messages({
       'number.base': "Hole harus berupa angka",
-      'number.positive': "Hole harus bernilai positif"
+      'number.min': "Hole minimal 0 (boleh tidak ada)"
     }),
+
+  isOrdered: Joi.boolean()
+    .optional()
+    .messages({
+      'boolean.base': "isOrdered harus berupa boolean"
+    })
 });
 
 

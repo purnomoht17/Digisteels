@@ -20,6 +20,9 @@ router.patch("/api/keranjang/:id/jumlah", authMiddleware, keranjangController.up
 // PATCH → Pelanggan update spesifikasi item (jumlah, size, thickness, hole)
 router.patch("/api/keranjang/:id/spesifikasi", authMiddleware, keranjangController.updateSpesifikasi);
 
+// PATCH → Tandai item keranjang sebagai sudah diorder
+router.patch("/api/keranjang/:id/markAsOrdered", authMiddleware, keranjangController.markAsOrdered);
+
 // DELETE → Pelanggan hapus item dari keranjang
 router.delete("/api/keranjang/:id", authMiddleware, keranjangController.remove);
 

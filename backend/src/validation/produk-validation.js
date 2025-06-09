@@ -31,7 +31,7 @@ const createProdukValidation = Joi.object({
             'string.uri': "Gambar harus berupa URL yang valid",
         }),
 
-    // Tambahkan validasi untuk array varian
+    // Validasi untuk array varian
     varian: Joi.array().items(
         Joi.object({
             id: Joi.string()
@@ -41,32 +41,42 @@ const createProdukValidation = Joi.object({
                     'string.base': "ID varian harus berupa string",
                     'string.length': "ID varian harus 24 karakter (ObjectId)"
                 }),
+            
+            // --- PERBAIKAN DI SINI ---
+            // Izinkan 'produKId' ada saat update, karena data diambil dari database
+            produkId: Joi.string()
+                .length(24)
+                .optional()
+                .messages({
+                    'string.base': "ID produk harus berupa string",
+                    'string.length': "ID produk harus 24 karakter (ObjectId)"
+                }),
 
             size: Joi.string()
                 .max(50)
-                .required()
+                .allow(null, '') // nullable
+                .optional()
                 .messages({
                     'string.base': "Size harus berupa string",
                     'string.max': "Size maksimal 50 karakter",
-                    'any.required': "Size wajib diisi",
                 }),
 
             thickness: Joi.number()
                 .positive()
-                .required()
+                .allow(null) // nullable
+                .optional()
                 .messages({
                     'number.base': "Thickness harus berupa angka",
                     'number.positive': "Thickness harus bernilai positif",
-                    'any.required': "Thickness wajib diisi",
                 }),
 
             hole: Joi.number()
                 .min(0)
-                .required()
+                .allow(null) // nullable
+                .optional()
                 .messages({
                     'number.base': "Hole harus berupa angka",
                     'number.min': "Hole minimal 0",
-                    'any.required': "Hole wajib diisi",
                 }),
 
             harga: Joi.number()
@@ -96,7 +106,7 @@ const createProdukValidation = Joi.object({
     })
 });
 
-// Validasi untuk menambahkan ProdukVarian secara terpisah (jika diperlukan)
+// Validasi untuk menambahkan ProdukVarian secara terpisah
 const createProdukVarianValidation = Joi.object({
     produkId: Joi.string()
         .length(24)
@@ -109,29 +119,29 @@ const createProdukVarianValidation = Joi.object({
 
     size: Joi.string()
         .max(50)
-        .required()
+        .allow(null, '') // nullable
+        .optional()
         .messages({
             'string.base': "Size harus berupa string",
             'string.max': "Size maksimal 50 karakter",
-            'any.required': "Size wajib diisi",
         }),
 
     thickness: Joi.number()
         .positive()
-        .required()
+        .allow(null) // nullable
+        .optional()
         .messages({
             'number.base': "Thickness harus berupa angka",
             'number.positive': "Thickness harus bernilai positif",
-            'any.required': "Thickness wajib diisi",
         }),
 
     hole: Joi.number()
-        .positive()
-        .required()
+        .min(0)
+        .allow(null) // nullable
+        .optional()
         .messages({
             'number.base': "Hole harus berupa angka",
-            'number.positive': "Hole harus bernilai positif",
-            'any.required': "Hole wajib diisi",
+            'number.min': "Hole minimal 0",
         }),
 
     harga: Joi.number()
