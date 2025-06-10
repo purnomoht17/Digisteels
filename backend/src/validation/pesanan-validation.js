@@ -1,57 +1,65 @@
-// Validasi untuk membuat pesanan
 import Joi from "joi";
 
-// ENUM status pesanan sesuai schema
-const allowedStatus = ["PENDING", "ON_PROCESS", "ON_DELIVERY"];
+// ENUM untuk status pesanan, dipisahkan untuk keamanan
+const allowedCreateStatus = ["PENDING"];
+const allowedUpdateStatus = ["PENDING", "ON_PROCESS", "ON_DELIVERY", "DONE", "CANCELLED"];
 
-// Validasi untuk membuat pesanan
+// Validasi untuk membuat pesanan baru
 const createPesananValidation = Joi.object({
   status: Joi.string()
-    .valid(...allowedStatus)
+    .valid(...allowedCreateStatus)
     .required()
     .messages({
       'string.base': "Status harus berupa string",
-      'any.only': `Status hanya boleh salah satu dari: ${allowedStatus.join(", ")}`,
+      'any.only': `Status pembuatan hanya boleh: ${allowedCreateStatus.join(", ")}`,
       'any.required': "Status wajib diisi",
+    }),
+
+  // --- TAMBAHKAN VALIDASI UNTUK ONGKOS KIRIM ---
+  ongkosKirim: Joi.number()
+    .min(0)
+    .optional()
+    .messages({
+        'number.base': "Ongkos kirim harus berupa angka",
+        'number.min': "Ongkos kirim tidak boleh negatif"
     }),
 
   alamatDetail: Joi.string()
     .required()
     .messages({
       'string.base': "Alamat detail harus berupa string",
-      'string.max': "Alamat detail maksimal 255 karakter",
       'any.required': "Alamat detail wajib diisi",
     }),
 
   provinsi: Joi.string()
+    .max(100)
     .required()
     .messages({
       'string.base': "Provinsi harus berupa string",
-      'string.max': "Provinsi maksimal 20 karakter",
       'any.required': "Provinsi wajib diisi",
     }),
 
   kabupaten: Joi.string()
+    .max(100)
     .required()
     .messages({
       'string.base': "Kabupaten harus berupa string",
-      'string.max': "Kabupaten maksimal 20 karakter",
       'any.required': "Kabupaten wajib diisi",
     }),
 
   kecamatan: Joi.string()
+    .max(100)
     .required()
     .messages({
       'string.base': "Kecamatan harus berupa string",
-      'string.max': "Kecamatan maksimal 20 karakter",
       'any.required': "Kecamatan wajib diisi",
     }),
 
   kelurahan: Joi.string()
+    .max(100)
     .required()
     .messages({
       'string.base': "Kelurahan harus berupa string",
-      'string.max': "Kelurahan maksimal 20 karakter",
       'any.required': "Kelurahan wajib diisi",
     }),
 
@@ -60,7 +68,6 @@ const createPesananValidation = Joi.object({
     .required()
     .messages({
       'string.base': "Nomor telepon harus berupa string",
-      'string.max': "Nomor telepon maksimal 255 karakter",
       'any.required': "Nomor telepon wajib diisi",
     }),
 
@@ -106,85 +113,28 @@ const createPesananValidation = Joi.object({
     }),
 });
 
-// Validasi untuk update pesanan (misalnya update status / alamat / bukti transfer)
+// Validasi untuk memperbarui pesanan
 const updatePesananValidation = Joi.object({
   status: Joi.string()
-    .valid(...allowedStatus)
+    .valid(...allowedUpdateStatus)
     .optional()
     .messages({
       'string.base': "Status harus berupa string",
-      'any.only': `Status hanya boleh salah satu dari: ${allowedStatus.join(", ")}`,
+      'any.only': `Status hanya boleh salah satu dari: ${allowedUpdateStatus.join(", ")}`,
     }),
+  
+  ongkosKirim: Joi.number().min(0).optional(), // Juga tambahkan di sini jika perlu diupdate
 
-  alamatDetail: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Alamat detail harus berupa string",
-      'string.max': "Alamat detail maksimal 255 karakter",
-    }),
-
-  provinsi: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Provinsi harus berupa string",
-      'string.max': "Provinsi maksimal 20 karakter",
-    }),
-
-  kabupaten: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Kabupaten harus berupa string",
-      'string.max': "Kabupaten maksimal 20 karakter",
-    }),
-
-  kecamatan: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Kecamatan harus berupa string",
-      'string.max': "Kecamatan maksimal 20 karakter",
-    }),
-
-  kelurahan: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Kelurahan harus berupa string",
-      'string.max': "Kelurahan maksimal 20 karakter",
-    }),
-
-  nomorTelepon: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Nomor telepon harus berupa string",
-      'string.max': "Nomor telepon maksimal 255 karakter",
-    }),
-
-  bankName: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Nama bank harus berupa string",
-    }),
-
-  accountName: Joi.string()
-    .optional()
-    .messages({
-      'string.base': "Nama pemilik rekening harus berupa string",
-    }),
-
-  accountNumber: Joi.number()
-    .integer()
-    .optional()
-    .messages({
-      'number.base': "Nomor rekening harus berupa angka",
-      'number.integer': "Nomor rekening harus berupa bilangan bulat",
-    }),
-
-  buktiTransferUrl: Joi.string()
-    .uri()
-    .optional()
-    .messages({
-      'string.base': "Bukti transfer harus berupa string (URL)",
-      'string.uri': "Bukti transfer harus berupa URL yang valid",
-    }),
+  alamatDetail: Joi.string().optional().messages({ 'string.base': "Alamat detail harus berupa string" }),
+  provinsi: Joi.string().max(100).optional().messages({ 'string.base': "Provinsi harus berupa string" }),
+  kabupaten: Joi.string().max(100).optional().messages({ 'string.base': "Kabupaten harus berupa string" }),
+  kecamatan: Joi.string().max(100).optional().messages({ 'string.base': "Kecamatan harus berupa string" }),
+  kelurahan: Joi.string().max(100).optional().messages({ 'string.base': "Kelurahan harus berupa string" }),
+  nomorTelepon: Joi.string().optional().messages({ 'string.base': "Nomor telepon harus berupa string" }),
+  bankName: Joi.string().optional().messages({ 'string.base': "Nama bank harus berupa string" }),
+  accountName: Joi.string().optional().messages({ 'string.base': "Nama pemilik rekening harus berupa string" }),
+  accountNumber: Joi.number().integer().optional().messages({ 'number.base': "Nomor rekening harus berupa angka" }),
+  buktiTransferUrl: Joi.string().uri().optional().messages({ 'string.uri': "Bukti transfer harus berupa URL yang valid" }),
 });
 
 // Validasi untuk mendapatkan pesanan berdasarkan ID

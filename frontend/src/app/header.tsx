@@ -24,7 +24,7 @@ export default function Header() {
       setIsLoggedIn(false);
       setNamaUser('');
     }
-  }, [pathname]); // tambahkan dependency pathname supaya refresh saat ganti halaman
+  }, [pathname]); 
 
   const handleLogout = () => {
     // Hapus token & nama dari localStorage

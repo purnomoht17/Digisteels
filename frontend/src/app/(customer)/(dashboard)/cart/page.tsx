@@ -5,12 +5,13 @@ import Head from 'next/head';
 import Header from '@/app/header';
 import Navbar from '@/app/components/navbar';
 import FooterHitam from '@/app/components/footerHitam';
-import EditModal from './components/editModal'; // This is the ProductModal
+import EditModal from './components/editModal'; // Ini adalah ProductModal Anda
 import OrderModal from './components/orderModal';
 import styles from './cart.module.css';
 
+// Tipe data untuk item di keranjang
 type CartItem = {
-  id: string;
+  id: string; // ID unik dari item di keranjang
   userId: string;
   produkVarianId: string;
   jumlah: number;
@@ -24,7 +25,7 @@ type CartItem = {
     harga: number;
     stok: number;
     produk: {
-      id: string;
+      id: string; // ID dari produk utama
       namaProduk: string;
       kategori: string;
       gambar?: string;
@@ -42,8 +43,8 @@ export default function CartPage() {
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedCartItemForOrder, setSelectedCartItemForOrder] = useState<CartItem | null>(null);
 
+  // Fungsi untuk mengambil data keranjang dari API
   const fetchCart = async () => {
-    // Resetting loading state to show feedback on refresh
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -60,7 +61,6 @@ export default function CartPage() {
         setCartItems(data.data);
       } else {
         console.error('Error fetching cart:', data.errors || data.message);
-        // Clear cart on auth error, for example
         setCartItems([]);
       }
     } catch (error) {
@@ -70,37 +70,41 @@ export default function CartPage() {
     }
   };
 
+  // Ambil data saat halaman pertama kali dimuat
   useEffect(() => {
     fetchCart();
   }, []);
 
+  // Handler saat tombol 'Edit' diklik
   const handleEdit = (item: CartItem) => {
     setSelectedCartItem(item);
     setShowEditModal(true);
   };
 
+  // Handler untuk menutup modal edit
   const handleCloseEditModal = () => {
     setShowEditModal(false);
     setSelectedCartItem(null);
-    // Refresh cart data whenever the edit modal is closed
+    // Muat ulang data keranjang untuk melihat perubahan
     fetchCart();
   };
-
+  
+  // Handler saat tombol 'Order' diklik
   const handleOrder = (item: CartItem) => {
     setSelectedCartItemForOrder(item);
     setShowOrderModal(true);
   };
 
+  // Handler untuk menutup modal order
   const handleCloseOrderModal = () => {
     setShowOrderModal(false);
     setSelectedCartItemForOrder(null);
-    fetchCart(); // Refresh cart after order
+    fetchCart();
   };
 
+  // Handler untuk menghapus item dari keranjang
   const handleDelete = async (itemId: string) => {
-    // Using a custom modal for confirmation would be better than window.confirm
-    // but for now, this works.
-    if (!window.confirm('Apakah Anda yakin ingin menghapus item ini dari keranjang?')) {
+    if (!confirm('Apakah Anda yakin ingin menghapus item ini dari keranjang?')) {
       return;
     }
 
@@ -110,7 +114,6 @@ export default function CartPage() {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       });
 
@@ -119,11 +122,9 @@ export default function CartPage() {
         fetchCart();
       } else {
         const errorData = await response.json();
-        console.error(errorData);
-        alert('Gagal menghapus item.');
+        alert(`Gagal menghapus item: ${errorData.message || 'Error tidak diketahui'}`);
       }
     } catch (err) {
-      console.error(err);
       alert('Terjadi kesalahan saat menghapus item.');
     }
   };
@@ -131,6 +132,7 @@ export default function CartPage() {
   return (
     <>
       <Head>
+        <title>Keranjang Belanja</title>
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -141,9 +143,9 @@ export default function CartPage() {
         <Navbar />
         <div className={styles.orderList}>
           {loading ? (
-            <p style={{ color: 'white', fontSize: '20px' }}>Loading cart...</p>
+            <p style={{ color: 'white', fontSize: '20px' }}>Memuat keranjang...</p>
           ) : cartItems.length === 0 ? (
-            <p style={{ color: 'white', fontSize: '20px' }}>Your cart is empty.</p>
+            <p style={{ color: 'white', fontSize: '20px' }}>Keranjang Anda kosong.</p>
           ) : (
             cartItems.map((item) => (
               <div key={item.id} className={styles.orderCard}>
@@ -169,10 +171,10 @@ export default function CartPage() {
                         </p>
                       </div>
                     </div>
-                    <p>Price: Rp {item.totalHarga.toLocaleString()}</p>
+                    <p>Harga: Rp {item.totalHarga.toLocaleString('id-ID')}</p>
                     <br />
                     <p>
-                      Amount: <span className={styles.amountValue}>{item.jumlah}</span>
+                      Jumlah: <span className={styles.amountValue}>{item.jumlah}</span>
                     </p>
                   </div>
                   <div className={styles.buttonWrap}>
@@ -203,10 +205,12 @@ export default function CartPage() {
 
         <FooterHitam />
 
-        {/* MODIFICATION: Passing the correct props to EditModal */}
+        {/* --- PERBAIKAN UTAMA DI SINI --- */}
+        {/* Sekarang kita meneruskan 'cartItemId' ke komponen EditModal */}
         {showEditModal && selectedCartItem && (
           <EditModal
-            id={selectedCartItem.produkVarian.produk.id}
+            id={selectedCartItem.produkVarian.produk.id} // ID Produk
+            cartItemId={selectedCartItem.id} // ID unik dari item di keranjang
             onClose={handleCloseEditModal}
           />
         )}
@@ -218,7 +222,6 @@ export default function CartPage() {
             totalPrice={selectedCartItemForOrder.totalHarga}
             shippingFee={0}
             keranjangId={selectedCartItemForOrder.id}
-            // MODIFICATION: Added the missing cartItem prop
             cartItem={selectedCartItemForOrder}
           />
         )}

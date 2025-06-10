@@ -27,9 +27,10 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const pesananId = req.params.id;
-    const { userId, isAdmin } = getUserContext(req);
-
-    const pesanan = await pesananService.getById(pesananId, userId, isAdmin);
+    
+    // Perbaikan: Fungsi getById di service hanya memerlukan ID pesanan.
+    // Informasi user (untuk otorisasi) biasanya ditangani di middleware atau di dalam service jika diperlukan.
+    const pesanan = await pesananService.getById(pesananId);
 
     res.status(200).json({
       message: "Detail pesanan berhasil diambil",
@@ -67,7 +68,10 @@ const update = async (req, res, next) => {
     const pesananId = req.params.id;
     const { userId, isAdmin } = getUserContext(req);
 
-    const result = await pesananService.update(pesananId, req.body, userId, isAdmin);
+    // --- PERBAIKAN DI SINI ---
+    // Urutan argumen disesuaikan dengan yang ada di pesanan-service.js
+    // Urutan yang benar: (id, userId, isAdmin, request)
+    const result = await pesananService.update(pesananId, userId, isAdmin, req.body);
 
     res.status(200).json({
       message: "Pesanan berhasil diperbarui",

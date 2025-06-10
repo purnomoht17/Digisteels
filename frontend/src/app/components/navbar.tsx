@@ -25,8 +25,8 @@ export default function Navbar() {
 
       <div className={styles.notifNeworder}>
         <Link
-          href="/orders"
-          className={pathname.startsWith('/orders') ? styles.active : ''}
+          href="/order"
+          className={pathname.startsWith('/order') ? styles.active : ''}
         >
           YOUR ORDERS
         </Link>

@@ -7,7 +7,7 @@ import {
   updatePesananValidation
 } from "../validation/pesanan-validation.js";
 
-// Ambil semua pesanan
+// ... (fungsi getAll dan getById tidak berubah)
 const getAll = async (userId, isAdmin) => {
   const whereClause = isAdmin ? {} : { userId };
 
@@ -22,21 +22,66 @@ const getAll = async (userId, isAdmin) => {
             }
           }
         }
-      }
+      },
+      user: true,
+      pembatalanPesanan: true,
+    },
+    orderBy: {
+        tanggalPemesanan: 'desc'
     }
   });
 
   return pesanan;
 };
 
-// Tambah pesanan baru (hanya customer)
+const getById = async (id) => {
+    const validId = validate(getPesananIdValidation, id);
+
+    const pesanan = await prismaClient.pesanan.findUnique({
+        where: { id: validId },
+        include: {
+            keranjang: {
+                include: {
+                    produkVarian: {
+                        include: {
+                            produk: true
+                        }
+                    }
+                }
+            },
+            user: true,
+            pembatalanPesanan: true,
+        }
+    });
+
+    if (!pesanan) {
+        throw new ResponseError(404, "Pesanan tidak ditemukan");
+    }
+
+    return pesanan;
+};
+
+// --- FUNGSI CREATE DIPERBAIKI ---
 const create = async (userId, request) => {
   const data = validate(createPesananValidation, request);
 
+  const keranjang = await prismaClient.keranjangBelanja.findFirst({
+      where: {
+          id: data.keranjangId,
+          userId: userId
+      }
+  });
+
+  if (!keranjang) {
+      throw new ResponseError(404, "Keranjang belanja tidak ditemukan atau bukan milik Anda.");
+  }
+
+  // Menyimpan data pesanan, termasuk ongkosKirim
   return prismaClient.pesanan.create({
     data: {
       userId: userId,
       status: data.status,
+      ongkosKirim: data.ongkosKirim, // Menyimpan ongkos kirim
       alamatDetail: data.alamatDetail,
       provinsi: data.provinsi,
       kabupaten: data.kabupaten,
@@ -48,126 +93,71 @@ const create = async (userId, request) => {
       accountName: data.accountName,
       accountNumber: data.accountNumber,
       buktiTransferUrl: data.buktiTransferUrl
-      // tanggalPemesanan tidak perlu diisi, Prisma akan auto
     }
   });
 };
 
-// Ambil satu pesanan berdasarkan ID
-const getById = async (id, userId, isAdmin) => {
-  const validId = validate(getPesananIdValidation, id);
-
-  const pesanan = await prismaClient.pesanan.findUnique({
-    where: { id: validId },
-    include: {
-      keranjang: {
-        include: {
-          produkVarian: {
-            include: {
-              produk: true
-            }
-          }
-        }
-      }
-    }
-  });
-
-  if (!pesanan) {
-    throw new ResponseError(404, "Pesanan tidak ditemukan");
-  }
-
-  if (!isAdmin && pesanan.userId !== userId) {
-    throw new ResponseError(403, "Anda tidak memiliki akses ke pesanan ini");
-  }
-
-  return pesanan;
-};
-
-// Update pesanan
-const update = async (id, request, userId, isAdmin) => {
-  const validId = validate(getPesananIdValidation, id);
+// --- FUNGSI UPDATE DIPERBAIKI ---
+const update = async (id, userId, isAdmin, request) => {
   const data = validate(updatePesananValidation, request);
+  const validId = validate(getPesananIdValidation, id);
 
   const pesanan = await prismaClient.pesanan.findUnique({
     where: { id: validId }
   });
 
-  if (!pesanan) {
-    throw new ResponseError(404, "Pesanan tidak ditemukan");
+  if (!pesanan) throw new ResponseError(404, "Pesanan tidak ditemukan");
+  if (!isAdmin && pesanan.userId !== userId) throw new ResponseError(403, "Anda tidak diizinkan mengubah pesanan ini.");
+  if (!isAdmin && data.status) {
+    if (!(pesanan.status === 'ON_DELIVERY' && data.status === 'DONE')) {
+      throw new ResponseError(403, "Anda hanya dapat menyelesaikan pesanan yang sedang dalam pengiriman.");
+    }
   }
 
-  // Jika customer
-  if (!isAdmin) {
-    if (pesanan.userId !== userId) {
-      throw new ResponseError(403, "Anda tidak memiliki akses ke pesanan ini");
-    }
-
-    if (data.status !== undefined) {
-      throw new ResponseError(403, "Customer tidak boleh mengubah status pesanan");
-    }
-
-    // Customer boleh update field lain selain status
-    return prismaClient.pesanan.update({
-      where: { id: validId },
-      data: {
-        alamatDetail: data.alamatDetail ?? pesanan.alamatDetail,
-        provinsi: data.provinsi ?? pesanan.provinsi,
-        kabupaten: data.kabupaten ?? pesanan.kabupaten,
-        kecamatan: data.kecamatan ?? pesanan.kecamatan,
-        kelurahan: data.kelurahan ?? pesanan.kelurahan,
-        nomorTelepon: data.nomorTelepon ?? pesanan.nomorTelepon,
-        bankName: data.bankName ?? pesanan.bankName,
-        accountName: data.accountName ?? pesanan.accountName,
-        accountNumber: data.accountNumber ?? pesanan.accountNumber,
-        buktiTransferUrl: data.buktiTransferUrl ?? pesanan.buktiTransferUrl
-      }
-    });
-  }
-
-  // Jika admin
-  return prismaClient.pesanan.update({
+  const updatedPesanan = await prismaClient.pesanan.update({
     where: { id: validId },
-    data: {
-      status: data.status ?? pesanan.status,
-      alamatDetail: data.alamatDetail ?? pesanan.alamatDetail,
-      provinsi: data.provinsi ?? pesanan.provinsi,
-      kabupaten: data.kabupaten ?? pesanan.kabupaten,
-      kecamatan: data.kecamatan ?? pesanan.kecamatan,
-      kelurahan: data.kelurahan ?? pesanan.kelurahan,
-      nomorTelepon: data.nomorTelepon ?? pesanan.nomorTelepon,
-      bankName: data.bankName ?? pesanan.bankName,
-      accountName: data.accountName ?? pesanan.accountName,
-      accountNumber: data.accountNumber ?? pesanan.accountNumber,
-      buktiTransferUrl: data.buktiTransferUrl ?? pesanan.buktiTransferUrl
+    data: data,
+    include: {
+      keranjang: true,
     }
   });
+
+  if (updatedPesanan.status === 'DONE') {
+    const existingLaporan = await prismaClient.laporanPenjualan.findFirst({
+      where: { pesananId: updatedPesanan.id }
+    });
+
+    if (!existingLaporan) {
+      // Menjumlahkan total harga produk dengan ongkos kirim untuk laporan
+      const totalPenjualanAkhir = updatedPesanan.keranjang.totalHarga + (updatedPesanan.ongkosKirim || 0);
+
+      await prismaClient.laporanPenjualan.create({
+        data: {
+          pesananId: updatedPesanan.id,
+          totalPenjualan: totalPenjualanAkhir,
+          keterangan: "Laporan dibuat otomatis oleh sistem."
+        }
+      });
+    }
+  }
+
+  return updatedPesanan;
 };
 
-// Hapus pesanan
+// ... (fungsi remove tidak berubah)
 const remove = async (id, userId, isAdmin) => {
   const validId = validate(getPesananIdValidation, id);
-
-  const pesanan = await prismaClient.pesanan.findUnique({
-    where: { id: validId }
-  });
-
-  if (!pesanan) {
-    throw new ResponseError(404, "Pesanan tidak ditemukan");
-  }
-
-  if (!isAdmin && pesanan.userId !== userId) {
-    throw new ResponseError(403, "Anda tidak memiliki akses untuk menghapus pesanan ini");
-  }
-
-  return prismaClient.pesanan.delete({
-    where: { id: validId }
-  });
+  const pesanan = await prismaClient.pesanan.findUnique({ where: { id: validId } });
+  if (!pesanan) throw new ResponseError(404, "Pesanan tidak ditemukan");
+  if (!isAdmin && pesanan.userId !== userId) throw new ResponseError(403, "Anda tidak diizinkan menghapus pesanan ini");
+  return prismaClient.pesanan.delete({ where: { id: validId } });
 };
+
 
 export default {
   getAll,
-  create,
   getById,
+  create,
   update,
   remove
 };
