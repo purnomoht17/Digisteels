@@ -159,8 +159,7 @@ export default function OrderModal({ isOpen, onClose, totalPrice, shippingFee: i
     }
   };
 
-  const handleSubmit = async () => {
-    // ... (Fungsi handleSubmit tetap sama, tidak perlu diubah)
+ const handleSubmit = async () => {
     if (!form.buktiTransferFile) {
       setError('Mohon upload bukti transfer terlebih dahulu.');
       return;
@@ -186,7 +185,14 @@ export default function OrderModal({ isOpen, onClose, totalPrice, shippingFee: i
       const uploadData = await uploadRes.json();
       const buktiTransferUrl = uploadData.data.gambar;
 
-      const token = localStorage.getItem('token');
+      // ======== PAKAI CUSTOMER TOKEN =========
+      const token = localStorage.getItem('customer_token');
+      if (!token) {
+        setError('Anda harus login terlebih dahulu.');
+        setUploading(false);
+        return;
+      }
+      // =======================================
 
       const pesananRes = await fetch('http://localhost:5001/api/pesanan', {
         method: 'POST',
@@ -207,6 +213,7 @@ export default function OrderModal({ isOpen, onClose, totalPrice, shippingFee: i
           accountName: form.accountName,
           accountNumber: Number(form.accountNumber),
           buktiTransferUrl: buktiTransferUrl,
+          ongkosKirim: shippingFee,
         }),
       });
 
@@ -283,6 +290,7 @@ export default function OrderModal({ isOpen, onClose, totalPrice, shippingFee: i
       setUploading(false);
     }
   };
+
 
   if (!isOpen) return null;
 

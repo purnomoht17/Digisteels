@@ -36093,6 +36093,15 @@
 │   │       │       └── signup
 │   │       │           ├── page.tsx
 │   │       │           └── signup.module.css
+│   │       ├── admin
+│   │       │   ├── (dashboard)
+│   │       │   └── auth
+│   │       │       ├── login
+│   │       │       │   ├── login.module.css
+│   │       │       │   └── page.tsx
+│   │       │       └── signup
+│   │       │           ├── page.tsx
+│   │       │           └── signup.module.css
 │   │       ├── components
 │   │       │   ├── footerHitam.module.css
 │   │       │   ├── footerHitam.tsx
@@ -36108,7 +36117,10 @@
 │   │       ├── home.css
 │   │       ├── layout.tsx
 │   │       └── page.tsx
-│   └── tsconfig.json
+│   ├── tsconfig.json
+│   └── utils
+│       └── data
+│           └── bank.json
 ├── package-lock.json
 ├── package.json
 ├── README.md
@@ -36122,4 +36134,4 @@
     ├── pesanana.http
     └── produk.http
 
-3434 directories, 32689 files
+3441 directories, 32694 files
