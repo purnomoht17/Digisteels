@@ -1,45 +1,79 @@
-### REGISTER Pelanggan
-POST http://localhost:5001/api/pelanggan/register
+# Variabel untuk mempermudah testing
+@hostname = http://localhost:5001/api
+@token = 
+
+###
+# 1. REGISTER Pelanggan Baru
+# (Jalankan ini sekali untuk membuat user baru)
+###
+POST {{hostname}}/pelanggan/register
 Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "Heru@example.com",
-  "password" : "Herupurnomo17.",
-  "nama" : "Heru Purnomo"
+  "email": "heru.purnomo@example.com",
+  "password": "passwordpanjang123",
+  "nama": "Heru Purnomo"
 }
 
 ###
-{
-    "email": "Ellen@example.com",
-    "password": "EllenAngelina.",
-    "nama": "Ellen Angelina"
-}
-
-### LOGIN Pelanggan
-POST http://localhost:5001/api/pelanggan/login
+# 2. LOGIN Pelanggan
+# (Jalankan ini setelah register untuk mendapatkan dan menyimpan token secara otomatis)
+###
+# @name loginRequest
+POST {{hostname}}/pelanggan/login
 Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "Heru@example.com",
-  "password" : "Herupurnomo17."
+  "email": "heru.purnomo@example.com",
+  "password": "passwordpanjang123"
 }
-# token: 1f2c79f8-40ce-40e2-86f4-8b29bc8704ba
+
+> {%
+    client.global.set("token", response.body.data.token);
+    client.log("Token berhasil disimpan: " + response.body.data.token);
+%}
 
 ###
-{
-  "email": "Ellen@example.com",
-  "password" : "EllenAngelina."
-}
-# token: d900ac24-e76b-4a7a-90ef-739930de026e
+# 3. GET Data Pelanggan Saat Ini
+# (Jalankan ini setelah login, token akan digunakan otomatis)
+###
+GET {{hostname}}/pelanggan/current
+Accept: application/json
+Authorization: {{token}}
 
-### LOGOUT
-DELETE http://localhost:5001/api/pelanggan/logout
+###
+# 4. UPDATE Data Pelanggan Saat Ini
+# (Jalankan ini setelah login, Anda bisa mengubah nama atau email atau keduanya)
+###
+PATCH {{hostname}}/pelanggan/current
 Content-Type: application/json
 Accept: application/json
-Authorization: 85b65db9-217e-4470-b398-66504a0c98ba
+Authorization: {{token}}
 
 {
-  "email": "heru@example.com"
+  "nama": "Heru Purnomo Updated"
 }
+
+###
+# 5. DELETE Akun Pelanggan
+# (Jalankan ini untuk menghapus akun. Membutuhkan konfirmasi password di body)
+###
+DELETE {{hostname}}/pelanggan/current
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+{
+  "password": "passwordpanjang123"
+}
+
+
+###
+# 6. LOGOUT Pelanggan
+# (Jalankan ini paling terakhir, tidak perlu request body)
+###
+DELETE {{hostname}}/pelanggan/logout
+Accept: application/json
+Authorization: {{token}}

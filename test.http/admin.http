@@ -4,8 +4,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "admin_heru",
-  "password" : "Herupurnomo17."
+  "username": "admin_baru",
+  "password" : "Password123."
 }
 
 ### LOGIN admin
@@ -14,13 +14,55 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "admin_heru",
-  "password" : "Herupurnomo17."
+  "username": "admin_baru",
+  "password" : "Password123."
 }
-# "token": "dbe5f306-521f-4fb5-acfb-be03d2df8fb8"
 
-### LOGOUT
-DELETE http://localhost:5001/api/admin/logout
+// Simpan token yang didapat dari respons login ini ke variabel lingkungan {{token_admin}}
+// Contoh: "token": "YOUR_ADMIN_TOKEN_HERE"
+
+
+### GET Admin Profile (Current)
+GET http://localhost:5001/api/admin/current
+Authorization: Bearer {{token_admin}}
+Accept: application/json
+
+
+### UPDATE Admin Profile
+PATCH http://localhost:5001/api/admin/current
 Content-Type: application/json
 Accept: application/json
-Authorization: 85b65db9-217e-4470-b398-66504a0c98ba
+Authorization: Bearer {{token_admin}}
+
+{
+  "username": "admin_heru_updated"
+}
+
+
+### UPDATE Admin Password
+PATCH http://localhost:5001/api/admin/current/password
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "oldPassword": "Password123.",
+  "newPassword": "NewPassword123."
+}
+
+
+### DELETE Admin Account
+DELETE http://localhost:5001/api/admin/current
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token_admin}}
+
+{
+  "password": "NewPassword123." // Gunakan password admin saat ini
+}
+
+
+### LOGOUT Admin
+DELETE http://localhost:5001/api/admin/logout
+Accept: application/json
+Authorization: Bearer {{token_admin}}
