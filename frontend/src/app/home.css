@@ -27,42 +27,40 @@
     top: 50%;
     left: 30%;
     transform: translate(-50%, -50%);
+    width: 80%; /* Make text width responsive */
+    max-width: 700px; /* Limit max width for readability */
 }
 
 .hero-text h1 {
     font-size: 2rem;
     margin-bottom: 20px;
+    line-height: 1.2; /* Improve readability on smaller screens */
 }
 
-.hero-login {
-    padding: 10px 20px;
-    border: 1px solid white;
-    background: transparent;
-    color: white;
-    cursor: pointer;
-}
-
+.hero-login,
 .hero-signup {
     padding: 10px 20px;
     border: 1px solid white;
     background: transparent;
     color: white;
     cursor: pointer;
+    margin-right: 10px; /* Add some space between buttons */
+    margin-top: 10px; /* Add margin for stacking on small screens if needed */
 }
 
 .introduction {
     display: flex;
     flex-direction: row;
-    margin-bottom: 40px;
-    margin-top: 40px;
-    margin-left: 20px;
+    margin: 40px 20px; /* Combined margin for better control */
     justify-content: center;
+    align-items: flex-start; /* Align items to the top */
 }
 
 .intro-decor {
     background: rgba(49, 59, 70, 1);
     min-width: 10px;
     margin-right: 10px;
+    flex-shrink: 0; /* Prevent it from shrinking */
 }
 
 .intro-desc {
@@ -70,43 +68,56 @@
     font-family: "Times", sans-serif;
     max-width: 700px;
     font-size: 20px;
+    flex-grow: 1; /* Allow it to grow */
 }
 
 .categories {
     margin-bottom: 40px;
     text-align: center;
+    padding: 0 20px; /* Add horizontal padding */
 }
 
 .categories p {
     font-family: "Times", sans-serif;
     font-size: 19.9px;
     letter-spacing: 3px;
+    margin-bottom: 10px; /* Space between paragraphs */
 }
 
 .category-grid {
     display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
     justify-content: center;
-    gap: 50px;
+    gap: 20px; /* Reduce gap for smaller screens initially */
     margin-top: 20px;
 }
 
 .cat-item {
-    max-width: 60%;
+    max-width: 300px; /* Set a max-width for individual items */
+    width: 100%; /* Ensure it takes full width within its max-width */
+    text-align: center;
 }
 
 .cat-item img {
-    width: 300px;
-    height: 400px;
+    width: 100%; /* Make images responsive within their container */
+    height: 300px; /* Adjusted height for better proportion on smaller screens */
     object-fit: cover;
 }
 
 .cat-item h4 {
     margin-top: 10px;
+    font-size: 1.2rem; /* Make heading font size relative */
 }
 
 .reviews {
     margin-bottom: 40px;
     text-align: center;
+    padding: 0 20px; /* Add horizontal padding */
+}
+
+.reviews h3 {
+    margin-bottom: 20px;
+    font-size: 2rem;
 }
 
 .review-wrapper {
@@ -124,28 +135,146 @@
     -webkit-overflow-scrolling: touch;
     gap: 1rem;
     padding: 1rem;
+    /* Hide scrollbar for a cleaner look, but keep functionality */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.review-track::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .review-card {
-    flex: 0 0 80%;
+    flex: 0 0 80%; /* Keep this for snap effect */
+    min-width: 250px; /* Ensure a minimum width for cards on smaller screens */
     scroll-snap-align: center;
     background: #929292;
     padding: 1rem;
     border-radius: 10px;
     min-height: 150px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute content nicely */
+    text-align: left; /* Align text within card to left */
+    color: #333; /* Darker text for readability */
 }
 
-.scroll-btn {
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    border-radius: 50%;
+.review-card strong {
+    margin-top: 10px;
+    display: block; /* Ensure strong tag is on its own line */
 }
 
-.scroll-btn:hover {
-    background-color: #555;
+
+/* --- Media Queries --- */
+
+/* For screens smaller than 768px (e.g., tablets, large phones) */
+@media (max-width: 768px) {
+    .hero-text {
+        left: 50%; /* Center the text horizontally */
+        transform: translate(-50%, -50%);
+        text-align: center; /* Center align text on smaller screens */
+        letter-spacing: 2px; /* Reduce letter spacing */
+    }
+
+    .hero-text h1 {
+        font-size: 1.7rem; /* Slightly smaller font for hero heading */
+    }
+
+    .hero-login,
+    .hero-signup {
+        display: block; /* Stack buttons vertically */
+        margin: 10px auto; /* Center buttons when stacked */
+        width: 80%; /* Make buttons wider */
+        max-width: 200px; /* Limit button max width */
+    }
+
+    .introduction {
+        flex-direction: column; /* Stack intro decor and desc vertically */
+        align-items: center; /* Center items when stacked */
+        margin: 20px; /* Adjust margin */
+    }
+
+    .intro-decor {
+        min-width: 50px; /* Make decor wider when stacked */
+        height: 5px; /* Make it a horizontal line */
+        margin-right: 0;
+        margin-bottom: 15px; /* Space between decor and text */
+    }
+
+    .intro-desc {
+        font-size: 18px; /* Slightly smaller font for introduction */
+        text-align: center; /* Center align introduction text */
+    }
+
+    .categories p {
+        font-size: 16px; /* Smaller font for categories text */
+        letter-spacing: 1px; /* Reduce letter spacing */
+    }
+
+    .category-grid {
+        flex-direction: column; /* Stack category items vertically */
+        gap: 30px; /* Increase gap between stacked items */
+        align-items: center; /* Center stacked items */
+    }
+
+    .cat-item {
+        max-width: 80%; /* Make cat items take more width */
+    }
+
+    .cat-item img {
+        height: 250px; /* Adjust image height for stacked items */
+    }
+
+    .reviews h3 {
+        font-size: 1.7rem;
+    }
+
+    .review-card {
+        flex: 0 0 90%; /* Make cards take more width on smaller screens */
+    }
+}
+
+/* For screens smaller than 480px (e.g., mobile phones) */
+@media (max-width: 480px) {
+    .hero-bg {
+        height: 250px; /* Reduce hero image height */
+    }
+
+    .hero-text h1 {
+        font-size: 1.4rem; /* Even smaller font for hero heading */
+        letter-spacing: 1px;
+    }
+
+    .hero-login,
+    .hero-signup {
+        padding: 8px 15px; /* Smaller padding for buttons */
+        font-size: 0.9rem; /* Smaller font for buttons */
+    }
+
+    .intro-desc {
+        font-size: 16px; /* Smaller font for introduction */
+    }
+
+    .categories p {
+        font-size: 14px;
+    }
+
+    .cat-item img {
+        height: 200px; /* Further reduce image height */
+    }
+
+    .cat-item h4 {
+        font-size: 1rem;
+    }
+
+    .reviews h3 {
+        font-size: 1.4rem;
+    }
+
+    .review-card {
+        flex: 0 0 95%; /* Almost full width for review cards */
+        min-height: 120px; /* Reduce minimum height */
+        font-size: 0.9rem; /* Smaller text in review cards */
+    }
 }
