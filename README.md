@@ -1,13 +1,3 @@
-
-
----
-
-# UAS Software Development - Kelompok 7
-
-Proyek ini merupakan tugas akhir dari mata kuliah Software Development. Aplikasi ini mencakup backend menggunakan **Node.js + Express + Prisma + MongoDB**, serta frontend menggunakan **Next.js (App Router)**.
-
-Semua perintah dijalankan dari direktori **root** proyek untuk kemudahan.
-
 ---
 
 ## ▶️ Setup & Menjalankan Proyek
